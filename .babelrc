@@ -1,0 +1,4 @@
+//바벨 env 쓰기 위해 필요한거
+{
+  "presets": ["@babel/preset-env"]
+}
