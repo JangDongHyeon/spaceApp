@@ -7,6 +7,14 @@ export const localsMiddleware = (req, res, next) => {
   next();
 };
 
+export const errorHandler = (err, req, res, next) => {
+  if (err.code !== "EBADCSRFTOKEN") return next(err);
+
+  // handle CSRF token errors here
+  res.status(403);
+  res.send("form tampered with");
+};
+
 // 공개된 routes의 미들웨어
 export const onlyPublic = (req, res, next) => {
   if (req.user) {

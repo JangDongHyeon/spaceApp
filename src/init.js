@@ -5,6 +5,8 @@ import app from "./app";
 import "./models/User";
 import "./models/Friend";
 import "./models/Summary";
+import "./models/Chat";
+import "./models/Room";
 
 dotenv.config();
 

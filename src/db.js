@@ -8,7 +8,7 @@ mongoose.connect(process.env.MONGO_URL, {
   useNewUrlParser: true,
   useFindAndModify: false
 });
-
+mongoose.set("useCreateIndex", true);
 const db = mongoose.connection;
 
 const handleOpen = () => console.log("Connected to DB");

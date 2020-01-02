@@ -2,9 +2,12 @@ import mongoose from "mongoose";
 import passportLocalMongoose from "passport-local-mongoose";
 
 const UserSchema = new mongoose.Schema({
-  name: String,
+  name: { type: String, required: true },
   email: {
-    type: String
+    type: String,
+    unique: true,
+    required: true,
+    index: true
   },
   createdAt: {
     type: Date,
@@ -24,6 +27,12 @@ const UserSchema = new mongoose.Schema({
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Summary"
+    }
+  ],
+  rooms: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Room"
     }
   ]
 });

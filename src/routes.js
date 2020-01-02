@@ -26,6 +26,24 @@ const SUMMARY = "/summary";
 const SUMMARY_ADD = "/:id/add";
 const SUMMARY_LIST = "/:id/list";
 
+//CHAT
+const CHAT = "/chat";
+const CHAT_LIST = "/:id/list";
+const CHAT_ADD = "/:id/add";
+const CHAT_CONTENT = "/:id/:room_index/content";
+const CHAT_SUMMARY = "/:id/:room_index/summary";
+
+//ROOM
+const ROOM = "/room";
+const ROOM_ADD = "/:id/add";
+const ROOM_LIST = "/:id/list";
+const ROOM_BOT_LEVEL = "/:id/bot";
+const ROOM_INVITE = "/:id/invite";
+const ROOM_EXILE = "/:id/exile";
+const ROOM_EXIT = "/:id/exit";
+const ROOM_BOT_MODE = "/:id/mode";
+const ROOM_BOT_LANGUAGE = "/:id/language";
+
 const routes = {
   home: HOME,
   join: JOIN,
@@ -34,6 +52,8 @@ const routes = {
   logout: LOGOUT,
   friend: FRIEND,
   summary: SUMMARY,
+  room: ROOM,
+  chat: CHAT,
   userDetail: id => {
     if (id) {
       return `/users/${id}`;
@@ -87,6 +107,73 @@ const routes = {
       return `summary/${id}/list`;
     }
     return SUMMARY_LIST;
+  },
+  room_add: id => {
+    if (id) {
+      return `room/${id}/add`;
+    }
+    return ROOM_ADD;
+  },
+
+  room_bot_level: id => {
+    if (id) {
+      return `room/${id}/bot`;
+    }
+    return ROOM_BOT_LEVEL;
+  },
+  room_bot_mode: id => {
+    if (id) {
+      return `room/${id}/mode`;
+    }
+    return ROOM_BOT_MODE;
+  },
+  room_bot_language: id => {
+    if (id) {
+      return `room/${id}/language`;
+    }
+    return ROOM_BOT_LANGUAGE;
+  },
+  room_invite: id => {
+    if (id) {
+      return `room/${id}/invite`;
+    }
+    return ROOM_INVITE;
+  },
+  room_exile: id => {
+    if (id) {
+      return `room/${id}/exile`;
+    }
+    return ROOM_EXILE;
+  },
+  room_exit: id => {
+    if (id) {
+      return `room/${id}/exit`;
+    }
+    return ROOM_EXIT;
+  },
+  chat_add: id => {
+    if (id) {
+      return `chat/${id}/add`;
+    }
+    return CHAT_ADD;
+  },
+  chat_list: id => {
+    if (id) {
+      return `chat/${id}/list`;
+    }
+    return CHAT_LIST;
+  },
+  chat_content: (id, room_index) => {
+    if (id && room_index) {
+      return `chat/${id}/${room_index}/content`;
+    }
+    return CHAT_CONTENT;
+  },
+  chat_summary: (id, room_index) => {
+    if (id && room_index) {
+      return `chat/${id}/${room_index}/summary`;
+    }
+    return CHAT_SUMMARY;
   }
 };
 
