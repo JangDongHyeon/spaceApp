@@ -5,7 +5,11 @@ import {
   postJoin,
   postLogin,
   logout,
-  LoginTimeUpdate
+  LoginTimeUpdate,
+  googleLogin,
+  postGoogleLogin,
+  postFacebookLogin,
+  facebookLogin
 } from "../controllers/userController";
 
 const globalRouter = express.Router();
@@ -21,5 +25,23 @@ globalRouter.get(routes.logout, logout);
 
 //Post LoginTime
 globalRouter.post(routes.loginTime, LoginTimeUpdate);
+
+//Google Login
+globalRouter.get(routes.google, googleLogin);
+
+globalRouter.get(
+  routes.googleCallback,
+  passport.authenticate("google", { failureRedirect: "/login" }),
+  postGoogleLogin
+);
+
+//Facebook Login
+globalRouter.get(routes.facebook, facebookLogin);
+
+globalRouter.get(
+  routes.facebookCallback,
+  passport.authenticate("facebook", { failureRedirect: "/login" }),
+  postFacebookLogin
+);
 
 export default globalRouter;

@@ -3,7 +3,8 @@ import routes from "../routes";
 import {
   chatAdd,
   chatList,
-  chatContentGet
+  chatContentGet,
+  chatSummary
 } from "../controllers/chatController";
 
 const chatRouter = express.Router();
@@ -17,5 +18,8 @@ chatRouter.get(routes.chat_list(), chatList);
 
 //채팅 로고
 chatRouter.get(routes.chat_content(), chatContentGet);
+
+//채팅 요약
+chatRouter.post(routes.chat_summary(), chatSummary);
 
 export default chatRouter;

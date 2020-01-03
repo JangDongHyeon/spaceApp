@@ -101,16 +101,37 @@ export const chatContentGet = async (req, res) => {
 export const chatSummary = async (req, res) => {
   const {
     params: { id, room_index },
-    query: { start_index, end_index }
+    body: { start_index, end_index }
   } = req;
 
   try {
-    const chatList = await Chat.find({ roomId: room_index })
-      .where("id")
-      .ate(start_index)
-      .lte(end_index)
-      .sort({ _id: -1 });
-    res.json(chatList).status(200);
+    const chatList = await Chat.find({
+      roomId: room_index,
+      id: { $gte: start_index, $lte: end_index }
+    }).sort({ _id: 1 });
+    let chat = "";
+    chatList.forEach(chats => {
+      chat += chats.content + ". ";
+    });
+
+    const options = {
+      uri: "https://chat.neoali.com:8074/summary_short",
+      method: "POST",
+      form: { String: chat }
+    };
+    let summary;
+    await request(options)
+      .then(body => {
+        summary = body;
+      })
+      .catch(err => console.log(err));
+
+    const newSummary = await Summary.create({
+      summary: summary,
+      summaryId: room_index
+    });
+
+    res.json({ summary_index: newSummary._id, summary: summary }).status(200);
   } catch (error) {
     console.log(error);
     res.status(400);

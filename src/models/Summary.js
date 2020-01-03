@@ -5,21 +5,26 @@ const SummarySchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    index: true,
-    required: true
+    index: true
   },
+  summaryId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Chat",
+    index: true
+  },
+
   regdate: {
     type: Date,
     default: Date.now
   }
 });
-autoIncrement.initialize(mongoose.connection);
-SummarySchema.plugin(autoIncrement.plugin, {
-  model: "Summary",
-  field: "id",
-  startAt: 1,
-  incrementBy: 1,
-  index: true
-});
+// autoIncrement.initialize(mongoose.connection);
+// SummarySchema.plugin(autoIncrement.plugin, {
+//   model: "Summary",
+//   field: "id",
+//   startAt: 1,
+//   incrementBy: 1,
+//   index: true
+// });
 const model = mongoose.model("Summary", SummarySchema);
 export default model;

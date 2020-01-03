@@ -44,6 +44,14 @@ const ROOM_EXIT = "/:id/exit";
 const ROOM_BOT_MODE = "/:id/mode";
 const ROOM_BOT_LANGUAGE = "/:id/language";
 
+//Google
+const GOOGLE = "/auth/google";
+const GOOGLE_CALLBACK = "/auth/google/callback";
+
+// Facebook
+const FB = "/auth/facebook";
+const FB_CALLBACK = "/auth/facebook/callback";
+
 const routes = {
   home: HOME,
   join: JOIN,
@@ -174,7 +182,11 @@ const routes = {
       return `chat/${id}/${room_index}/summary`;
     }
     return CHAT_SUMMARY;
-  }
+  },
+  google: GOOGLE,
+  googleCallback: GOOGLE_CALLBACK,
+  facebook: FB,
+  facebookCallback: FB_CALLBACK
 };
 
 export default routes;

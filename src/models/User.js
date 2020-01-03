@@ -9,6 +9,8 @@ const UserSchema = new mongoose.Schema({
     required: true,
     index: true
   },
+  googleId: Number,
+  facebookId: Number,
   createdAt: {
     type: Date,
     default: Date.now
