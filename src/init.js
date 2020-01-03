@@ -9,7 +9,6 @@ import "./models/Chat";
 import "./models/Room";
 
 dotenv.config();
-
 const PORT = process.env.PORT || 4000;
 
 const handleListening = () =>

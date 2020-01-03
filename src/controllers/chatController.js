@@ -50,26 +50,32 @@ export const chatAdd = async (req, res) => {
     room.chats.push(newChat);
     room.save();
 
-    // //감정
-    // const sentiment= await chatApi.get("/chat/sentiment", {
-    //     params: {
-    //       sentence: content,
-    //       roomId: room_index
-    //     }
-    //   });
-    //챗봇
-    // const chatBot= await chatApi.get("/chat/english",{
-    //     params: {
-    //         sentence: content,
-    //         roomIdz: room_index,
-    //         method:room.botLevel,
-    //         mode:req.body.chatMo
-    //       }
-    //   })
-    res.json({ chat_index: newChat._id, regdate: newChat.createdAt });
+    //감정
+    const sentiment = await chatApi.get("/chat/sentiment", {
+      params: {
+        sentence: content,
+        roomId: room_index
+      }
+    });
+    console.log(sentiment);
+    // 챗봇
+    const chatBot = await chatApi.get("/chat/english", {
+      params: {
+        sentence: content,
+        roomIdz: room_index,
+        method: room.botLevel,
+        mode: room.botMode
+      }
+    });
+    console.log(chatBot);
+    res
+      .json({ chat_index: newChat._id, regdate: newChat.createdAt })
+      .status(200);
   } catch (error) {
     console.log(error);
     res.status(400);
+  } finally {
+    res.end();
   }
 };
 
