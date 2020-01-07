@@ -13,10 +13,10 @@ export const postJoin = async (req, res) => {
       email
     });
     await User.register(user, password);
-    res.status(200);
+    res.status(200).json({ result: "ok" });
   } catch (error) {
     console.log(error);
-    res.status(400);
+    res.status(400).json({ result: "error" });
   } finally {
     res.end();
   }
@@ -26,9 +26,7 @@ export const postJoin = async (req, res) => {
 export const postLogin = passport.authenticate(
   "local",
   {
-    failureRedirect: routes.login,
-    successRedirect: routes.home,
-    successFlash: "Welcome",
+    successFlash: "ok",
     failureFlash: "Can't log in. Check email and/or password"
   }
   //   async (req, res) => {
@@ -46,7 +44,7 @@ export const postLogin = passport.authenticate(
 
 export const googleLogin = passport.authenticate("google", {
   scope: ["profile", "email"],
-  successFlash: "Welcome",
+  successFlash: "ok",
   failureFlash: "can't log in at this time"
 });
 
@@ -79,11 +77,13 @@ export const googleLoginCallback = async (
 };
 
 export const postGoogleLogin = (req, res) => {
-  res.redirect(routes.home);
+  res.status(200).json({ result: "ok" });
+  res.end();
+  // res.redirect(routes.home);
 };
 
 export const facebookLogin = passport.authenticate("facebook", {
-  successFlash: "Welcome",
+  successFlash: "ok",
   failureFlash: "can't log in at this time"
 });
 
@@ -101,15 +101,15 @@ export const facebookLoginCallback = async (
     if (user) {
       // 동일한 이메일이 발견됐을 경우
       user.facebookId = id;
-      user.avatarUrl = `https://graph.facebook.com/${id}/picture?type=large`;
+      // user.avatarUrl = `https://graph.facebook.com/${id}/picture?type=large`;
       user.save();
       return cb(null, user);
     }
     const newUser = await User.create({
       email,
       name,
-      facebookId: id,
-      avatarUrl: `https://graph.facebook.com/${id}/picture?type=large`
+      facebookId: id
+      // avatarUrl: `https://graph.facebook.com/${id}/picture?type=large`
     });
     return cb(null, newUser);
   } catch (error) {
@@ -118,18 +118,31 @@ export const facebookLoginCallback = async (
 };
 
 export const postFacebookLogin = (req, res) => {
-  res.redirect(routes.home);
+  res.status(200).json({ result: "ok" });
+  res.end();
+  // res.redirect(routes.home);
 };
 
 export const LoginTimeUpdate = async (req, res) => {
+  const {
+    body: { email }
+  } = req;
+
   try {
-    await User.findByIdAndUpdate(req.user.id, {
-      updatedAt: Date.now()
-    });
-    res.status(200);
+    const users = await User.findOne({ email });
+    console.log(users.id);
+    console.log(req.user.id);
+    if (users.id === req.user.id) {
+      await User.findByIdAndUpdate(req.user.id, {
+        updatedAt: Date.now()
+      });
+      res.status(200).json({ result: "ok" });
+    } else {
+      res.status(400).json({ result: "error" });
+    }
   } catch (error) {
     console.log(error);
-    res.status(400);
+    res.status(400).json({ result: "error" });
   } finally {
     res.end();
   }
@@ -155,8 +168,14 @@ export const LoginTimeUpdate = async (req, res) => {
 
 //Log Out
 export const logout = (req, res) => {
-  req.logout();
-  res.redirect(routes.home);
+  try {
+    req.logout();
+    res.status(200).json({ result: "ok" });
+  } catch (error) {
+    res.status(400).json({ result: "error" });
+  } finally {
+    res.end();
+  }
 };
 
 export const postChangePassword = async (req, res) => {
@@ -165,35 +184,41 @@ export const postChangePassword = async (req, res) => {
   } = req;
   try {
     if (newPassword !== newPassword1) {
-      res.status(400);
-      res.redirect(`/users${routes.changePassword}`);
+      res.status(400).json({ result: "error" });
+      //res.redirect(`/users${routes.changePassword}`);
       return;
     }
     await req.user.changePassword(oldPassword, newPassword);
-    res.redirect(routes.me);
+    res.status(200).json({ result: "ok" });
   } catch (error) {
-    res.status(400);
-    res.redirect(`/users${routes.changePassword}`);
+    res.status(400).json({ result: "error" });
+    //res.redirect(`/users${routes.changePassword}`);
+  } finally {
+    res.end();
   }
 };
 
 export const postFindPassword = async (req, res) => {
-  //email 받아 이메일에 패스워드 전송
-  //   const {
-  //     body: { email }
-  //   } = req;
+  //  email 받아 이메일에 패스워드 전송
+  const {
+    body: { email }
+  } = req;
 
   try {
-    console.log(req.user);
-    const randomPassword = Math.random()
-      .toString(36)
-      .substr(2, 5);
-    await req.user.setPassword(randomPassword);
-    req.user.save();
-    res.json({ password: randomPassword }).status(200);
+    const users = await User.findOne(email);
+    if (users.id === req.user.id) {
+      const randomPassword = Math.random()
+        .toString(36)
+        .substr(2, 5);
+      await req.user.setPassword(randomPassword);
+      req.user.save();
+      res.json({ password: randomPassword, result: "ok" }).status(200);
+    } else {
+      res.status(400).json({ result: "error" });
+    }
   } catch (error) {
     console.log(error);
-    res.status(400);
+    res.status(400).json({ result: "error" });
   } finally {
     res.end();
   }
@@ -204,12 +229,13 @@ export const search = async (req, res) => {
   const {
     query: { email: email }
   } = req;
-  let users = [];
+
   try {
-    users = await User.find({
+    const users = await User.findOne({
       email: { $regex: email, $options: "i" }
     });
-    res.json(users);
+    const user = { id: users._id, name: users.name, email: users.email };
+    res.json(user);
   } catch (error) {
     console.log(error);
     res.status(400);

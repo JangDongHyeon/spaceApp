@@ -5,14 +5,15 @@ import {
   postChangePassword,
   search
 } from "../controllers/userController";
+import { onlyPrivate } from "../middlewares";
 
 const userRouter = express.Router();
 
 //Post FindPassword
-userRouter.post(routes.passwordFind, postFindPassword);
+userRouter.post(routes.passwordFind, onlyPrivate, postFindPassword);
 
 //Post ChangPassword
-userRouter.post(routes.changePassword, postChangePassword);
+userRouter.post(routes.changePassword, onlyPrivate, postChangePassword);
 
 //Search
 userRouter.get(routes.search, search);

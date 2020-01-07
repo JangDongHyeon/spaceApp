@@ -7,17 +7,23 @@ import {
   requestFirendList,
   friendList
 } from "../controllers/friendController";
+import { onlyPrivate } from "../middlewares";
 
 const friendRouter = express.Router();
 
-friendRouter.post(routes.friendAdd(), postAddFriend);
+//친구  추가
+friendRouter.post(routes.friendAdd(), onlyPrivate, postAddFriend);
 
-friendRouter.post(routes.friendDelete(), deleteFriend);
+//친구  삭제
+friendRouter.post(routes.friendDelete(), onlyPrivate, deleteFriend);
 
-friendRouter.post(routes.friendAccept(), AddFirendAccept);
+// 친구  승인
+friendRouter.post(routes.friendAccept(), onlyPrivate, AddFirendAccept);
 
-friendRouter.get(routes.friendRequestList(), requestFirendList);
+// 친구 요청  리스트
+friendRouter.get(routes.friendRequestList(), onlyPrivate, requestFirendList);
 
-friendRouter.get(routes.friendList(), friendList);
+//친구  리스트
+friendRouter.get(routes.friendList(), onlyPrivate, friendList);
 
 export default friendRouter;
