@@ -31,10 +31,10 @@ export const addRoom = async (req, res) => {
         roomId: newRoom.id
       }
     });
-    res.status(200);
+    res.status(200).json({ result: "ok", room_index: newRoom.id });
   } catch (error) {
     console.log(error);
-    res.status(400);
+    res.status(400).json({ result: "error" });
   } finally {
     res.end();
   }
@@ -51,11 +51,11 @@ export const inviteRoom = async (req, res) => {
     if (room.owner === req.user.id) {
       room.users.push(friend_id);
       room.save();
-      res.status(200);
-    } else res.status(400);
+      res.status(200).json({ result: "ok" });
+    } else res.status(400).json({ result: "error" });
   } catch (error) {
     console.log(error);
-    res.status(400);
+    res.status(400).json({ result: "error" });
   } finally {
     res.end();
   }
@@ -72,11 +72,11 @@ export const exileRoom = async (req, res) => {
     if (room.owner === req.user.id) {
       room.users.pull(kick_id);
       room.save();
-      res.status(200);
-    } else res.status(400);
+      res.status(200).json({ result: "ok" });
+    } else res.status(400).json({ result: "error" });
   } catch (error) {
     console.log(error);
-    res.status(400);
+    res.status(400).json({ result: "error" });
   } finally {
     res.end();
   }
@@ -93,11 +93,11 @@ export const botRoomLevel = async (req, res) => {
     const rooms = await Room.findById(room_uid);
     if (rooms.owner === req.user.id) {
       await Room.findOneAndUpdate({ _id: room_uid }, { botLevel: bot_level });
-      res.status(200);
-    } else res.status(400);
+      res.status(200).json({ result: "ok" });
+    } else res.status(400).json({ result: "error" });
   } catch (error) {
     console.log(error);
-    res.status(400);
+    res.status(400).json({ result: "error" });
   } finally {
     res.end();
   }
@@ -114,11 +114,11 @@ export const RoomModeChange = async (req, res) => {
     const rooms = await Room.findById(room_uid);
     if (rooms.owner === req.user.id) {
       await Room.findOneAndUpdate({ _id: room_uid }, { botMode: bot_mode });
-      res.status(200);
-    } else res.status(400);
+      res.status(200).json({ result: "ok" });
+    } else res.status(400).json({ result: "error" });
   } catch (error) {
     console.log(error);
-    res.status(400);
+    res.status(400).json({ result: "error" });
   } finally {
     res.end();
   }
@@ -135,11 +135,11 @@ export const RoomLanguageChange = async (req, res) => {
     const rooms = await Room.findById(room_uid);
     if (rooms.owner === req.user.id) {
       await Room.findOneAndUpdate({ _id: room_uid }, { language: language });
-      res.status(200);
-    } else res.status(400);
+      res.status(200).json({ result: "ok" });
+    } else res.status(400).json({ result: "error" });
   } catch (error) {
     console.log(error);
-    res.status(400);
+    res.status(400).json({ result: "error" });
   } finally {
     res.end();
   }
@@ -164,7 +164,7 @@ export const exitRoom = async (req, res) => {
         await rooms.update({ owner: rooms.users[0] });
         // await Room.Update({ _id: id }, { owner: rooms.users[0] });
         rooms.save();
-        res.status(200);
+        res.status(200).json({ result: "ok" });
       } else {
         await Room.findOneAndRemove({ _id: room_uid });
         await chatApi.get("/chat/delete", {
@@ -173,12 +173,12 @@ export const exitRoom = async (req, res) => {
           }
         });
 
-        res.status(200);
+        res.status(200).json({ result: "ok" });
       }
     }
   } catch (error) {
     console.log(error);
-    res.status(400);
+    res.status(400).json({ result: "error" });
   } finally {
     res.end();
   }

@@ -7,6 +7,7 @@ const SEARCH = "/search";
 //User
 const USERS = "/users";
 const USER_DETAIl = "/:id";
+const EMAIL_FIND = "/email-find";
 const EDIT_PROFILE = "/edit-profile";
 const CHANGE_PASSWORD = "/change-password";
 const PASSWORDFIND = "/password-find";
@@ -62,6 +63,7 @@ const routes = {
   summary: SUMMARY,
   room: ROOM,
   chat: CHAT,
+  email_find: EMAIL_FIND,
   userDetail: id => {
     if (id) {
       return `/users/${id}`;

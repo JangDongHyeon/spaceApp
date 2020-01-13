@@ -15,9 +15,10 @@ export const postAddFriend = async (req, res) => {
     });
     user.friends.push(newFriend);
     user.save();
+    res.status(200).json({ result: "ok" });
   } catch (error) {
     console.log(error);
-    res.status(400);
+    res.status(400).json({ result: "error" });
   } finally {
     res.end();
   }
@@ -35,8 +36,9 @@ export const deleteFriend = async (req, res) => {
       throw Error();
     }
     await Friend.findOneAndRemove({ _id: friend_id });
+    res.status(200).json({ result: "ok" });
   } catch (error) {
-    res.status(400);
+    res.status(400).json({ result: "error" });
   } finally {
     res.end();
   }
@@ -54,9 +56,10 @@ export const AddFirendAccept = async (req, res) => {
     }
     //Todo
     await Friend.findOneAndUpdate({ _id: friend_id }, { consent: true });
+    res.status(200).json({ result: "ok" });
   } catch (error) {
     console.log(error);
-    res.status(400);
+    res.status(400).json({ result: "error" });
   } finally {
     res.end();
   }

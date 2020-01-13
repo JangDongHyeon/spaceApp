@@ -4,13 +4,14 @@ import dotenv from "dotenv";
 import morgan from "morgan";
 import helmet from "helmet";
 import hpp from "hpp";
+import cors from "cors";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import session from "express-session";
 import passport from "passport";
 import MongoStore from "connect-mongo";
 import mongoose from "mongoose";
-import logger from "./logger";
+//import logger from "./logger";
 import flash from "express-flash";
 import { localsMiddleware } from "./middlewares";
 import globalRouter from "./routers/globalRouter";
@@ -25,6 +26,7 @@ import "./passport";
 
 const app = express();
 dotenv.config();
+
 const CookieStore = MongoStore(session);
 const sessionOption = {
   secret: process.env.COOKIE_SECRET,
@@ -37,7 +39,7 @@ const sessionOption = {
   // npm install connect-mongo, 쿠키 정보를 mongoDB에 저장
   store: new CookieStore({ mongooseConnection: mongoose.connection })
 };
-
+app.use(cors());
 app.use(helmet());
 app.use(hpp());
 app.disable("x-powered-by");
@@ -45,7 +47,7 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-if (process.env.NODE_ENV) {
+if (process.env.NODE_ENV !== "pro") {
   app.use(morgan("combined"), { stream: logger.stream });
   sessionOption.proxy = true;
   sessionOption.cookie.secure = true;
@@ -70,7 +72,7 @@ app.use((req, res, next) => {
   const err = new Error("Not Found");
   err.status = 404;
 
-  logger.console(err.message);
+  console.log(err.message);
   next(err);
 });
 

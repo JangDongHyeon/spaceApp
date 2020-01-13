@@ -137,10 +137,12 @@ export const chatSummary = async (req, res) => {
       summaryId: room_index
     });
 
-    res.json({ summary_index: newSummary._id, summary: summary }).status(200);
+    res
+      .json({ result: "ok", summary_index: newSummary._id, summary: summary })
+      .status(200);
   } catch (error) {
     console.log(error);
-    res.status(400);
+    res.status(400).json({ result: "error" });
   } finally {
     res.end();
   }

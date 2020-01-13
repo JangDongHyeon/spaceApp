@@ -29,10 +29,10 @@ export const addSummary = async (req, res) => {
 
     user.summarys.push(newSummary);
     user.save();
-    res.json({ summary_index: newSummary._id, summary: summary });
+    res.json({ result: "ok", summary_index: newSummary._id, summary: summary });
   } catch (error) {
     console.log(error);
-    res.status(400);
+    res.status(400).json({ result: "error" });
   } finally {
     res.end();
   }

@@ -23,24 +23,14 @@ export const postJoin = async (req, res) => {
 
   //Post Login
 };
-export const postLogin = passport.authenticate(
-  "local",
-  {
-    successFlash: "ok",
-    failureFlash: "Can't log in. Check email and/or password"
-  }
-  //   async (req, res) => {
-  //     try {
-  //       await User.findByIdAndUpdate(res.id, {
-  //         updatedAt: Date.now()
-  //       });
-
-  //       res.status(200);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   }
-);
+export const postLogin = passport.authenticate("local", {
+  successRedirect: "/",
+  failureRedirect: "/login",
+  successFlash: "ok",
+  failureFlash: "Can't log in. Check email and/or password",
+  successMessage: "ok",
+  failureMessage: "error"
+});
 
 export const googleLogin = passport.authenticate("google", {
   scope: ["profile", "email"],
@@ -58,6 +48,7 @@ export const googleLoginCallback = async (
     _json: { sub, name, email }
   } = profile;
   try {
+    console.log("asd");
     const user = await User.findOne({ email });
     if (user) {
       // 동일한 이메일이 발견됐을 경우
@@ -76,8 +67,10 @@ export const googleLoginCallback = async (
   }
 };
 
-export const postGoogleLogin = (req, res) => {
-  res.status(200).json({ result: "ok" });
+export const postGoogleLogin = async (req, res) => {
+  const users = await User.findById({ _id: req.user.id });
+
+  res.status(200).json({ result: "ok", name: users.name, id: users._id });
   res.end();
   // res.redirect(routes.home);
 };
@@ -130,8 +123,7 @@ export const LoginTimeUpdate = async (req, res) => {
 
   try {
     const users = await User.findOne({ email });
-    console.log(users.id);
-    console.log(req.user.id);
+
     if (users.id === req.user.id) {
       await User.findByIdAndUpdate(req.user.id, {
         updatedAt: Date.now()
@@ -235,10 +227,26 @@ export const search = async (req, res) => {
       email: { $regex: email, $options: "i" }
     });
     const user = { id: users._id, name: users.name, email: users.email };
-    res.json(user);
+    res.json(user).status(200);
   } catch (error) {
     console.log(error);
-    res.status(400);
+    res.status(400).json({ result: "error" });
+  } finally {
+    res.end();
+  }
+};
+
+//이메일 찿기
+export const emailFind = async (req, res) => {
+  const {
+    query: { email }
+  } = req;
+  try {
+    const user = await User.findOne({ email });
+    res.json(user).status(200);
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ result: "error" });
   } finally {
     res.end();
   }

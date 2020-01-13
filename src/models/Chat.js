@@ -14,6 +14,9 @@ const ChatSchema = new mongoose.Schema({
     required: true,
     index: true
   },
+  sentiment: {
+    type: Number
+  },
   createdAt: {
     type: Date,
     default: Date.now
